@@ -227,13 +227,13 @@
       font-weight: 500;
       color: var(--gold);
       line-height: 1.35;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0;
     }
 
     .svc-sprig {
       width: 46px;
       aspect-ratio: 1070 / 800;
-      margin: 0.2rem auto 0.7rem;
+      margin: 0.85rem auto;   /* equal space above and below → centered */
       display: block;
       color: #6a7c6b;
     }
@@ -251,14 +251,25 @@
       .svc-desc { font-size: 0.92rem; }
       .svc-sprig { width: 58px; }
     }
+
+    .site-footer {
+      text-align: center;
+      padding: 2.4rem 1.4rem 2.8rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(189,171,134,0.55);
+      border-top: 1px solid rgba(189,171,134,0.15);
+      margin-top: 3rem;
+    }
   </style>
 </head>
 <body>
 
 <svg style="display:none" aria-hidden="true">
   <symbol id="sprig" viewBox="60 250 1070 800"><g transform="translate(0.000000,2622.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
-<path d="M0 23650 c0 -20 7 -20 6030 -20 6023 0 6030 0 6030 20 0 20 -7 20
--6030 20 -6023 0 -6030 0 -6030 -20z"/>
+
 <path d="M4460 23520 c-27 -27 -28 -195 -2 -323 l18 -89 -25 -15 c-14 -9 -38
 -24 -53 -34 -34 -24 -44 -24 -75 1 -33 26 -89 36 -109 19 -32 -26 1 -121 81
 -234 44 -62 145 -258 145 -282 0 -18 -20 -16 -71 7 -24 11 -56 20 -70 20 -19
@@ -434,6 +445,7 @@
 
     <p class="home-tagline">Where Vision Meets Execution—Precisely, Creatively, Seamlessly</p>
   </div>
+  <footer class="site-footer">© 2025–2026 Juniper Studio Design Company Inc. · All rights reserved.</footer>
 </div>
 
 <!-- ══════ ABOUT ══════ -->
@@ -444,6 +456,7 @@
     <p>At Juniper Studio, we streamline the design and construction process from start to finish. Serving as a trusted extension of your team, we ensure precision at every stage - minimizing errors, maximizing efficiency, and delivering projects that are flawlessly executed, functional, and inspiring.</p>
     <p>With nearly 20 years of experience in the design and construction industry, specializing in kitchens, baths and interior millwork, Christina brings expertise, precision, and a collaborative spirit to every project. From conceptual space planning to detailed technical construction documentation, Christina combines creativity with technical knowledge to ensure every detail is thoughtfully executed.</p>
   </div>
+  <footer class="site-footer">© 2025–2026 Juniper Studio Design Company Inc. · All rights reserved.</footer>
 </div>
 
 <!-- ══════ SERVICES ══════ -->
@@ -459,6 +472,7 @@
       <div class="svc"><h3 class="svc-name">Material &amp; Finish Consultation</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Guidance on cabinetry finishes, countertops, hardware, lighting, plumbing fixtures and other design elements</p></div>
     </div>
   </div>
+  <footer class="site-footer">© 2025–2026 Juniper Studio Design Company Inc. · All rights reserved.</footer>
 </div>
 
 <script>
