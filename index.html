@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juniper Studio Design Co.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #2a4339;                     /* sampled */
+      --gold:      #bdab86;                     /* sampled — all gold text */
+      --gold-line: rgba(189,171,134,0.6);       /* card borders */
+      --gold-hi:   #ddceab;
+      --circle:    #c6b696;                     /* sampled — icon circles */
+      --nav-txt:   #bfc6c3;                     /* sampled */
+      --nav-act:   #ffffff;                     /* sampled */
+      --sprig:     #4d5f50;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: flex-end; align-items: center;
+      gap: 2.3rem;
+      padding: calc(1.1rem + env(safe-area-inset-top, 0px)) 1.4rem 1.1rem;
+      background: var(--bg);
+    }
+
+    nav a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.28rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--nav-txt);
+      text-decoration: none;
+      transition: color 0.25s;
+      cursor: pointer;
+    }
+    nav a:hover { color: var(--nav-act); }
+    nav a.active { color: var(--nav-act); font-weight: 500; }
+
+    /* ─── PAGES ─── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Text rises into place on every page change */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .page.active .inner > *,
+    .page.active .home-flex > * {
+      animation: riseIn 0.65s cubic-bezier(.22,.61,.36,1) both;
+    }
+    .page.active .inner > *:nth-child(1), .page.active .home-flex > *:nth-child(1) { animation-delay: 0.05s; }
+    .page.active .inner > *:nth-child(2), .page.active .home-flex > *:nth-child(2) { animation-delay: 0.14s; }
+    .page.active .inner > *:nth-child(3), .page.active .home-flex > *:nth-child(3) { animation-delay: 0.23s; }
+    .page.active .inner > *:nth-child(4), .page.active .home-flex > *:nth-child(4) { animation-delay: 0.32s; }
+    .page.active .inner > *:nth-child(5), .page.active .home-flex > *:nth-child(5) { animation-delay: 0.41s; }
+    @media (prefers-reduced-motion: reduce) {
+      .page.active .inner > *, .page.active .home-flex > * { animation: none; }
+    }
+
+    /* ─── HOME ─── */
+    .home-flex { display: flex; flex-direction: column; min-height: 100vh; }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      padding: calc(5.7rem + env(safe-area-inset-top, 0px)) 4vw 1.6rem 11.5vw;
+      overflow: hidden;
+    }
+
+    .botanical {
+      position: absolute;
+      top: 2.9rem;
+      left: 1vw;
+      width: clamp(180px, 44vw, 340px);
+      aspect-ratio: 1070 / 800;
+      color: #4e5f4f;
+      pointer-events: none;
+    }
+
+    .hero-lockup { position: relative; z-index: 1; }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-variant: small-caps;
+      font-size: clamp(2.7rem, 13vw, 5.6rem);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      white-space: nowrap;
+    }
+
+    .hero-script {
+      font-family: 'Mrs Saint Delafield', cursive;
+      font-size: clamp(2.2rem, 10.5vw, 4.4rem);
+      font-weight: 400;
+      color: var(--gold);
+      display: block;
+      text-align: right;
+      line-height: 1;
+      margin-top: -0.12em;
+      padding-right: 9vw;
+    }
+
+    /* Floor plan photo — full bleed, natural proportions */
+    .floorplan-strip { width: 100%; }
+    .floorplan-strip img { width: 100%; height: auto; display: block; }
+
+    /* Contact rows */
+    .contact-bar {
+      display: flex; flex-direction: column;
+      gap: 0.65rem;
+      padding: 1.3rem 1.1rem 0.5rem;
+    }
+
+    .contact-bar a {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 1.25rem;
+      letter-spacing: 0.02em;
+      color: var(--gold);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-bar a:hover { color: var(--gold-hi); }
+
+    .cb-icon {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--circle);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cb-icon svg { width: 21px; height: 21px; display: block; }
+
+    .home-tagline {
+      font-variant: small-caps;
+      font-size: clamp(1.2rem, 5.4vw, 1.7rem);
+      letter-spacing: 0.04em;
+      font-weight: 500;
+      color: var(--gold);
+      text-align: right;
+      line-height: 1.5;
+      padding: 0.9rem 1.1rem 3rem;
+    }
+
+    /* ─── INNER PAGES ─── */
+    .inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 13.5rem 1.1rem 4rem;
+    }
+    @media (min-width: 700px) { .inner { padding-top: 10rem; } }
+
+    .pg-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 6.6vw, 2.2rem);
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-left: 0.3em; /* optically balance the letter-spacing */
+    }
+
+    /* ─── ABOUT — the real sprig, huge and faint behind the text ─── */
+    #about { position: relative; overflow: hidden; min-height: 100vh; }
+    .about-sprig {
+      position: absolute;
+      top: 14vh; left: -22vw;
+      width: 150vw;
+      aspect-ratio: 1070 / 800;
+      color: #31493d;
+      pointer-events: none;
+    }
+    #about .inner { position: relative; }
+
+    #about .inner p {
+      font-size: clamp(1.15rem, 4.8vw, 1.35rem);
+      line-height: 1.75;
+      font-weight: 400;
+      color: var(--gold);
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 1.7rem;
+    }
+    #about .inner p:last-of-type { margin-bottom: 0; }
+
+    /* ─── SERVICES ─── */
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .svc {
+      border: 1px solid var(--gold-line);
+      padding: 0.95rem 0.55rem 1.1rem;
+      text-align: center;
+    }
+
+    .svc-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--gold);
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+
+    .svc-sprig {
+      width: 30px; height: 22px;
+      margin: 0.1rem auto 0.65rem;
+      display: block;
+      color: #5d6f5e;
+    }
+
+    .svc-desc {
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    @media (min-width: 700px) {
+      .svc { padding: 1.6rem 1.2rem 1.7rem; }
+      .svc-name { font-size: 1.1rem; }
+      .svc-desc { font-size: 0.92rem; }
+      .svc-sprig { width: 38px; height: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="sprig" viewBox="60 250 1070 800"><g transform="translate(0.000000,2622.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+<path d="M0 23650 c0 -20 7 -20 6030 -20 6023 0 6030 0 6030 20 0 20 -7 20
+-6030 20 -6023 0 -6030 0 -6030 -20z"/>
+<path d="M4460 23520 c-27 -27 -28 -195 -2 -323 l18 -89 -25 -15 c-14 -9 -38
+-24 -53 -34 -34 -24 -44 -24 -75 1 -33 26 -89 36 -109 19 -32 -26 1 -121 81
+-234 44 -62 145 -258 145 -282 0 -18 -20 -16 -71 7 -24 11 -56 20 -70 20 -19
+0 -35 11 -54 36 -54 70 -112 90 -158 54 -52 -41 -47 -108 13 -174 44 -48 66
+-88 75 -138 10 -54 37 -91 104 -143 83 -63 91 -58 91 53 0 55 4 92 12 100 9 9
+81 12 262 12 138 0 257 4 265 9 44 28 86 373 57 472 -44 152 -126 68 -177
+-181 -29 -141 -28 -140 -43 -140 -35 0 -29 261 9 445 30 141 5 215 -73 215
+-37 0 -61 27 -68 76 -17 124 -28 182 -40 206 -26 50 -79 63 -114 28z"/>
+<path d="M5178 22543 c-47 -51 -72 -113 -59 -148 16 -44 15 -280 -1 -293 -7
+-6 -30 -13 -51 -17 -20 -4 -49 -17 -63 -28 -52 -41 -54 -57 -54 -449 l0 -363
+46 -130 c25 -71 54 -154 65 -184 23 -64 23 -71 6 -71 -12 0 -33 25 -82 95 -19
+28 -30 12 -45 -65 -6 -36 -21 -87 -31 -115 l-19 -50 62 -58 c75 -70 92 -70 96
+-2 4 63 12 71 68 78 87 9 134 69 134 170 0 74 -20 76 -47 5 -35 -93 -62 -65
+-118 121 -13 42 -35 108 -49 146 -53 139 -2 401 138 704 l67 143 -12 72 c-13
+79 -13 83 -3 214 6 87 8 94 35 113 24 17 29 27 29 64 0 76 -61 102 -112 48z"/>
+<path d="M5706 22449 c-34 -26 -69 -94 -61 -118 8 -26 102 -103 121 -99 21 4
+64 118 64 168 0 66 -68 93 -124 49z"/>
+<path d="M2255 22205 c-50 -49 -26 -272 51 -470 23 -60 28 -91 34 -212 6 -132
+9 -146 38 -205 89 -178 93 -165 89 268 l-3 359 -36 122 c-19 68 -43 132 -53
+143 -27 29 -89 27 -120 -5z"/>
+<path d="M4392 22018 c-35 -35 -3 -118 87 -217 58 -65 71 -54 71 57 0 86 -1
+89 -32 119 -55 52 -101 66 -126 41z"/>
+<path d="M4460 21520 c-43 -43 10 -225 66 -225 23 0 35 205 13 231 -17 20 -56
+17 -79 -6z"/>
+<path d="M5775 21359 c-4 -5 -1 -48 6 -95 12 -82 12 -86 -9 -107 -22 -21 -22
+-21 -57 -3 -59 32 -65 18 -65 -148 0 -117 4 -148 19 -183 22 -46 78 -83 129
+-83 16 0 37 -9 47 -20 26 -29 28 -27 86 85 96 183 118 233 125 275 l7 42 -129
+123 c-126 122 -146 136 -159 114z"/>
+<path d="M3090 21005 c-17 -21 -8 -104 20 -177 51 -137 162 -267 419 -491 130
+-114 155 -129 178 -106 14 14 53 2 53 -17 0 -9 13 0 30 20 52 58 120 56 120
+-4 0 -34 15 -47 35 -30 16 14 12 165 -5 186 -6 6 -46 14 -89 17 -260 20 -471
+180 -542 410 -19 61 -27 73 -86 122 -86 74 -117 90 -133 70z"/>
+<path d="M1610 20890 c-55 -55 -2 -138 160 -249 137 -93 159 -120 141 -174 -6
+-18 -10 -44 -9 -58 3 -20 -2 -24 -28 -27 -38 -4 -89 35 -250 189 -151 144
+-217 176 -264 129 -24 -24 -25 -45 -5 -95 28 -67 -21 -87 -145 -60 -314 68
+-489 56 -498 -33 -9 -87 101 -128 393 -147 154 -9 277 -24 434 -51 112 -19
+174 -24 281 -23 l138 2 39 46 c21 25 45 57 54 72 10 14 33 36 53 48 20 13 36
+29 36 36 0 18 -351 364 -398 392 -47 29 -105 30 -132 3z"/>
+<path d="M6067 20879 c-52 -30 -60 -167 -27 -459 26 -224 26 -250 1 -250 -10
+0 -21 7 -25 15 -7 19 -65 55 -89 55 -10 0 -29 -11 -42 -25 -42 -42 -35 -85 37
+-206 58 -97 178 -349 178 -372 0 -16 -43 -76 -58 -82 -7 -3 -30 6 -50 20 -46
+31 -82 32 -110 2 -44 -47 -17 -125 111 -323 99 -152 140 -244 109 -244 -12 0
+-45 38 -70 81 -12 19 -31 44 -43 55 -21 18 -94 127 -209 307 -54 84 -89 114
+-76 63 8 -33 -1 -37 -39 -14 -45 26 -93 82 -100 116 -3 15 -10 44 -16 65 -5
+20 -8 41 -5 46 20 32 -81 91 -154 91 -52 0 -101 39 -155 122 -26 40 -87 125
+-135 188 -48 63 -106 145 -129 182 -53 85 -92 118 -136 118 -142 0 -42 -214
+238 -508 l137 -143 31 -101 c38 -123 72 -164 201 -243 48 -31 116 -74 150 -98
+151 -103 186 -120 218 -107 43 18 55 9 96 -72 51 -102 69 -125 130 -164 30
+-19 60 -47 68 -62 18 -35 99 -122 113 -122 29 0 43 32 43 95 0 35 5 87 11 117
+5 29 15 76 20 103 15 77 29 122 65 220 57 152 43 202 -52 192 -38 -4 -54 -2
+-57 7 -8 19 34 128 91 238 97 189 89 265 -23 211 -69 -33 -65 14 16 182 56
+117 60 182 14 203 -106 46 -116 62 -144 238 -41 258 -64 304 -134 263z"/>
+<path d="M2301 20776 c-15 -18 9 -69 69 -145 57 -72 82 -69 93 13 10 70 -1 87
+-81 122 -62 28 -66 29 -81 10z"/>
+<path d="M5857 20623 c-4 -3 -7 -43 -7 -88 0 -50 -5 -86 -12 -93 -9 -9 -68
+-12 -204 -12 -232 0 -224 4 -224 -111 0 -119 -27 -97 -89 74 -13 33 -36 44
+-56 27 -12 -10 -13 -16 -4 -27 7 -7 15 -30 20 -51 16 -78 81 -227 113 -262 50
+-53 109 -166 102 -194 -6 -24 18 -67 73 -132 14 -17 34 -46 44 -64 30 -56 50
+-23 35 60 -24 136 30 294 189 563 102 171 114 223 67 284 -25 33 -35 39 -47
+26z"/>
+<path d="M2930 20533 c0 -113 -14 -237 -34 -293 -13 -39 -13 -46 0 -73 20 -38
+12 -59 -20 -51 -28 7 -40 -8 -32 -40 6 -25 20 -31 333 -151 120 -46 148 -50
+172 -22 7 10 -5 29 -47 73 -149 159 -282 399 -332 602 -20 77 -40 54 -40 -45z"/>
+<path d="M3279 20354 c-33 -39 77 -174 347 -424 261 -243 334 -315 334 -329 0
+-31 -36 -16 -136 58 -103 76 -151 100 -174 86 -18 -11 -10 -43 18 -69 42 -40
+215 -156 232 -156 28 0 80 -38 74 -55 -5 -11 -22 -15 -66 -15 -56 0 -323 -27
+-481 -49 -40 -5 -81 -6 -99 0 -17 4 -97 11 -177 14 -228 10 -284 25 -376 105
+-57 49 -83 56 -149 40 -66 -16 -94 -4 -225 89 -143 101 -143 101 -182 101 -41
+0 -69 -24 -69 -61 0 -65 87 -142 272 -240 124 -65 193 -118 186 -141 -13 -39
+-170 -27 -294 22 -120 48 -178 37 -186 -35 -2 -24 -7 -29 -23 -26 -108 19
+-145 7 -145 -45 0 -44 -44 -77 -93 -69 -65 10 -193 43 -266 70 -36 13 -104 37
+-151 54 -133 48 -285 40 -285 -14 0 -43 278 -146 567 -209 82 -19 102 -33 113
+-84 10 -47 -15 -72 -69 -72 -161 0 -417 71 -611 168 -195 98 -351 76 -320 -45
+28 -115 421 -275 730 -298 50 -4 96 -12 103 -17 36 -30 -6 -105 -153 -269
+-200 -222 -284 -351 -320 -493 -20 -78 -7 -96 70 -96 130 0 236 108 484 494
+205 319 375 507 533 587 72 37 42 -7 -56 -80 -196 -147 -303 -311 -204 -311
+35 0 29 -25 -43 -174 -120 -252 -130 -332 -47 -390 81 -57 140 3 215 217 81
+234 102 267 188 292 72 21 98 44 156 143 137 232 340 467 497 575 92 64 598
+158 615 114 8 -22 -78 -100 -198 -180 -153 -101 -399 -330 -443 -414 -34 -62
+20 -130 95 -119 86 11 135 52 346 288 141 158 296 250 567 338 188 61 169 61
+238 0 120 -104 219 -181 267 -208 27 -15 81 -57 120 -93 67 -64 205 -161 245
+-174 39 -12 24 -38 -17 -31 -246 40 -485 45 -522 12 -21 -19 -27 -58 -15 -91
+24 -62 261 -97 444 -66 36 6 102 11 147 11 90 0 102 7 78 44 -29 43 1 62 40
+26 23 -22 23 -24 -10 -137 -9 -30 26 -51 106 -64 35 -6 95 -24 132 -41 85 -38
+122 -43 220 -29 l79 11 126 -53 c70 -30 168 -69 217 -86 50 -18 126 -46 170
+-63 65 -25 85 -28 111 -20 41 12 96 -6 138 -46 17 -17 56 -39 86 -50 30 -11
+78 -28 105 -38 28 -9 107 -39 176 -65 69 -27 215 -80 325 -118 109 -38 325
+-117 479 -175 305 -115 304 -115 330 -86 26 29 7 63 -52 94 -112 57 -233 268
+-233 407 0 76 14 113 102 264 58 99 68 145 39 174 -44 44 -105 19 -158 -64
+-62 -99 -67 -45 -12 131 60 194 75 332 41 374 -27 34 -53 14 -95 -72 -63 -128
+-91 -270 -113 -568 -7 -100 -31 -170 -59 -170 -40 0 -78 120 -125 393 -63 372
+-61 605 6 787 58 157 41 250 -44 250 -66 0 -84 34 -106 189 -23 162 -66 231
+-124 195 -52 -33 -55 -238 -8 -510 29 -172 78 -522 80 -574 2 -57 -32 -47 -69
+19 -62 113 -160 180 -202 138 -29 -29 98 -320 269 -618 53 -91 115 -210 138
+-265 22 -54 52 -124 66 -155 46 -107 29 -108 -94 -9 -54 43 -139 118 -189 164
+-98 93 -134 114 -153 91 -29 -35 47 -126 151 -182 38 -20 69 -43 69 -50 0 -17
+0 -17 -88 12 -121 41 -125 42 -357 127 -121 44 -287 104 -370 134 l-149 54
+-96 93 c-96 94 -146 134 -364 288 -213 150 -276 241 -306 439 -10 64 -25 132
+-33 151 -31 74 -114 111 -198 89 -57 -16 -78 1 -136 106 -52 95 -86 124 -143
+124 -164 0 16 -348 460 -892 72 -89 11 -71 -202 58 -174 105 -196 124 -280
+228 -223 276 -365 557 -427 843 -23 107 -48 160 -91 197 -44 37 -48 36 -100
+-34 -15 -20 -21 -23 -31 -12 -7 6 -33 12 -57 12 -41 0 -44 2 -38 23 7 31 -37
+78 -56 59 -23 -23 -78 3 -78 38 0 13 -18 22 -30 15 -7 -4 -4 -18 7 -38 30 -54
+34 -58 48 -47 21 17 32 -10 31 -74 -2 -132 -76 -96 -263 130 -163 196 -248
+253 -294 198z"/>
+<path d="M1885 20152 c-6 -4 -18 -19 -28 -34 l-17 -28 -158 0 c-174 0 -231
+-12 -272 -55 -22 -23 -22 -25 -6 -50 39 -59 128 -69 308 -34 115 22 200 22
+295 -1 66 -16 112 5 92 41 -8 16 -7 26 5 44 18 28 6 41 -32 36 -27 -3 -72 23
+-72 43 0 34 -82 62 -115 38z"/>
+<path d="M5563 17935 c-70 -30 -49 -86 69 -178 109 -85 135 -114 120 -129 -18
+-18 -186 14 -352 68 -285 92 -341 106 -441 111 -104 6 -147 -6 -170 -48 -51
+-95 119 -165 611 -249 377 -65 403 -74 487 -164 71 -76 100 -89 373 -157 300
+-75 414 -147 340 -214 -18 -16 -29 -17 -169 -5 -255 22 -325 -10 -237 -108 19
+-21 32 -43 28 -49 -20 -31 -181 -19 -278 22 -36 15 -77 12 -101 -7 -19 -15
+-33 0 -33 37 0 31 -3 35 -39 45 -21 5 -44 16 -50 23 -45 55 -247 113 -281 82
+-65 -59 92 -186 309 -251 12 -4 12 -8 -3 -22 -13 -14 -35 -17 -109 -17 -113 1
+-185 25 -362 125 -138 78 -196 100 -264 100 -81 0 -105 -52 -56 -124 51 -74
+30 -73 -242 15 -314 101 -725 199 -835 199 -110 0 -138 -70 -54 -134 97 -74
+214 -114 537 -186 262 -57 451 -110 456 -127 7 -21 -36 -34 -144 -46 -118 -13
+-135 -24 -118 -73 30 -84 189 -95 450 -32 348 85 805 150 805 114 0 -9 -22
+-15 -77 -19 -55 -4 -102 -15 -158 -38 -53 -21 -120 -38 -200 -49 -142 -21
+-189 -33 -232 -59 -70 -43 -78 -97 -20 -128 28 -14 44 -15 157 -3 183 19 172
+20 182 -17 35 -135 365 -30 633 202 100 86 181 136 243 150 62 13 31 -38 -48
+-78 -86 -45 -235 -153 -244 -178 -38 -112 124 -144 263 -53 31 20 110 91 176
+158 169 171 377 335 528 416 83 45 96 46 229 24 62 -10 83 2 193 106 58 55
+110 100 115 100 24 0 31 40 12 68 -24 34 -18 52 18 52 68 0 110 34 110 90 0
+76 -32 82 -314 56 -170 -16 -187 -24 -166 -76 29 -71 -33 -120 -152 -120 -306
+0 -697 207 -1068 565 -211 204 -319 257 -427 210z"/>
+<path d="M9113 17229 c-6 -8 -7 -23 -3 -34 4 -11 5 -25 3 -31 -13 -35 134 -72
+527 -133 761 -120 1085 -190 1404 -305 116 -43 139 -44 171 -11 57 56 30 114
+-72 153 -284 109 -658 190 -1228 267 -104 14 -266 36 -360 50 -93 14 -208 30
+-255 36 -47 5 -105 12 -130 16 -32 3 -49 1 -57 -8z"/>
+</g></symbol>
+</svg>
+
+<nav>
+  <a onclick="show('home')" class="active" id="nav-home">Home</a>
+  <a onclick="show('about')" id="nav-about">About</a>
+  <a onclick="show('services')" id="nav-services">Services</a>
+</nav>
+
+<!-- ══════ HOME ══════ -->
+<div class="page active" id="home">
+  <div class="home-flex">
+
+    <div class="hero">
+      <!-- Juniper sprig traced from the original site artwork -->
+      <svg class="botanical"><use href="#sprig"/></svg>
+      <div class="hero-lockup">
+        <span class="hero-name">Juniper Studio</span>
+        <span class="hero-script">design co.</span>
+      </div>
+    </div>
+
+    <div class="floorplan-strip">
+      <img src="floorplan.jpg" alt="Architectural floor plan by Juniper Studio" />
+    </div>
+
+    <div class="contact-bar">
+      <a href="https://www.juniperstudiodc.com">
+        <span class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f5f1e6" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.6 8.5h16.8M3.6 15.5h16.8"/></svg></span>
+        www.juniperstudiodc.com
+      </a>
+      <a href="mailto:christina@juniperstudiodc.com">
+        <span class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f5f1e6" stroke-width="1.4" aria-hidden="true"><path d="M4 11l8-6 8 6"/><path d="M4 11v8.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V11"/><path d="M4 11l8 5.5L20 11"/><rect x="8" y="5.5" width="8" height="7" rx="0.5" fill="#f5f1e6" stroke="none"/><text x="12" y="11.4" text-anchor="middle" font-size="6.5" font-family="Georgia, serif" fill="#2a4339" stroke="none">@</text></svg></span>
+        christina@juniperstudiodc.com
+      </a>
+      <a href="tel:6175997661">
+        <span class="cb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f5f1e6" stroke-width="1.5" aria-hidden="true"><rect x="7.5" y="3" width="9" height="18" rx="2"/><path d="M11 18.2h2"/></svg></span>
+        617-599-7661
+      </a>
+    </div>
+
+    <p class="home-tagline">Where Vision Meets Execution—Precisely, Creatively, Seamlessly</p>
+  </div>
+</div>
+
+<!-- ══════ ABOUT ══════ -->
+<div class="page" id="about">
+  <svg class="about-sprig" aria-hidden="true"><use href="#sprig"/></svg>
+  <div class="inner">
+    <h1 class="pg-title">About Us</h1>
+    <p>At Juniper Studio, we streamline the design and construction process from start to finish. Serving as a trusted extension of your team, we ensure precision at every stage - minimizing errors, maximizing efficiency, and delivering projects that are flawlessly executed, functional, and inspiring.</p>
+    <p>With nearly 20 years of experience in the design and construction industry, specializing in kitchens, baths and interior millwork, Christina brings expertise, precision, and a collaborative spirit to every project. From conceptual space planning to detailed technical construction documentation, Christina combines creativity with technical knowledge to ensure every detail is thoughtfully executed.</p>
+  </div>
+</div>
+
+<!-- ══════ SERVICES ══════ -->
+<div class="page" id="services">
+  <div class="inner">
+    <h1 class="pg-title">Services</h1>
+    <div class="svc-grid">
+      <div class="svc"><h3 class="svc-name">Custom Cabinetry &amp; Millwork Design</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Provide detailed designs for kitchen cabinets, built-ins, vanities and millwork</p></div>
+      <div class="svc"><h3 class="svc-name">Kitchen &amp; Bath Space Planning</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Optimize layout, storage, and workflow to create efficient, functional spaces</p></div>
+      <div class="svc"><h3 class="svc-name">Project Management</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Site measurement and verification, quality control and conflict resolution, provide progress updates, facilitate project handoff</p></div>
+      <div class="svc"><h3 class="svc-name">CAD Drawings &amp; Technical Documentation</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Floor plans, elevations, perspectives, technical design details and construction-ready drawings</p></div>
+      <div class="svc"><h3 class="svc-name">Project Presentations</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">3D renderings and visual presentations to showcase design intent</p></div>
+      <div class="svc"><h3 class="svc-name">Material &amp; Finish Consultation</h3><svg class="svc-sprig" aria-hidden="true"><use href="#sprig"/></svg><p class="svc-desc">Guidance on cabinetry finishes, countertops, hardware, lighting, plumbing fixtures and other design elements</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+</script>
+
+</body>
+</html>
